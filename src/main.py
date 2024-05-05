@@ -7,7 +7,11 @@ response = openai.ChatCompletion.create(
     {"role": "user", "content": "Hello, I'm John."},
     {"role": "assistant", "content": "Hi John, how can I help you today?"},
     {"role": "user", "content": "Do you know my name?"},
-  ]
+  ],
+  stream=True
 )
 
-print(response)
+for chunk in response:
+  choice = chunk["choices"][0]
+  if choice["finish_reason"] is None:
+    print(choice["delta"]["content"])
