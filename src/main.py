@@ -5,6 +5,8 @@ response = openai.ChatCompletion.create(
   messages=[
     {"role": "system", "content": "You are a helpful assistant."},
     {"role": "user", "content": "Hello, I'm John."},
+    {"role": "assistant", "content": "Hi John, how can I help you today?"},
+    {"role": "user", "content": "Do you know my name?"},
   ]
 )
 
