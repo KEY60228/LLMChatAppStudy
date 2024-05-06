@@ -1,14 +1,17 @@
+from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chat_models import ChatOpenAI
-from langchain.schema import AIMessage, HumanMessage, SystemMessage
+from langchain.schema import HumanMessage
 
-chat = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+chat = ChatOpenAI(
+  model_name="gpt-3.5-turbo",
+  temperature=0,
+  streaming=True,
+  callbacks=[StreamingStdOutCallbackHandler()],
+)
 
 messages = [
-  SystemMessage(content="You are a helpful assistant."),
-  HumanMessage(content="こんにちは！私はジョンです。"),
-  AIMessage(content="こんにちは、ジョンさん！どのようにお手伝いできますか？"),
-  HumanMessage(content="私の名前が分かりますか？"),
+  HumanMessage(content="自己紹介してください")
 ]
 
 result = chat(messages)
-print(result.content)
+print()
