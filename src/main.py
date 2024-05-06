@@ -1,17 +1,20 @@
-from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.chat_models import ChatOpenAI
-from langchain.schema import HumanMessage
-
-chat = ChatOpenAI(
-  model_name="gpt-3.5-turbo",
-  temperature=0,
-  streaming=True,
-  callbacks=[StreamingStdOutCallbackHandler()],
+from langchain.prompts import (
+  ChatPromptTemplate,
+  PromptTemplate,
+  SystemMessagePromptTemplate,
+  HumanMessagePromptTemplate,
 )
+from langchain.schema import HumanMessage, SystemMessage
 
-messages = [
-  HumanMessage(content="自己紹介してください")
-]
+chat_prompt = ChatPromptTemplate.from_messages([
+  SystemMessagePromptTemplate.from_template("あなたは{country}料理のプロフェッショナルです。"),
+  HumanMessagePromptTemplate.from_template("以下の料理のレシピを考えてください\n\n料理名: {dish}")
+])
+
+messages = chat_prompt.format_prompt(country="イギリス", dish="肉じゃが").to_messages()
+
+chat = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
 
 result = chat(messages)
-print()
+print(result.content)
