@@ -1,11 +1,16 @@
-from langchain.chains import ConversationChain
-from langchain.chat_models import ChatOpenAI
-from langchain.memory import ConversationBufferMemory
+from langchain_community.document_loaders import GitLoader
 
-chat = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
-conversation = ConversationChain(llm=chat, memory=ConversationBufferMemory())
+def file_filter(file_path):
+  return file_path.endswith(".mdx")
 
-while True:
-  user_message = input("You: ")
-  ai_message = conversation.run(input=user_message)
-  print(f"AI: {ai_message}")
+loader = GitLoader(
+  clone_url="https://github.com/langchain-ai/langchain",
+  repo_path="./langchain",
+  branch="master",
+  file_filter=file_filter,
+)
+
+print("Loading documents...")
+
+raw_docs = loader.load()
+print(len(raw_docs))
