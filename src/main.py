@@ -2,6 +2,8 @@ from langchain_community.document_loaders import GitLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
+from langchain.chains import RetrievalQA
+from langchain.chat_models import ChatOpenAI
 
 def file_filter(file_path):
   return file_path.endswith(".mdx")
@@ -36,9 +38,8 @@ retriever = db.as_retriever()
 
 query = "AWSのS3からデータを読み込むためのDocumentLoaderはありますか？"
 
-context_docs = retriever.get_relevant_documents(query)
-print(f"len = {len(context_docs)}")
+chat = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+qa_chain = RetrievalQA.from_chain_type(llm=chat, chain_type="stuff", retriever=retriever)
 
-first_doc = context_docs[0]
-print(f"metadata = {first_doc.metadata}")
-print(first_doc.page_content)
+result = qa_chain.run(query)
+print(result)
