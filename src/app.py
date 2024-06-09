@@ -1,4 +1,7 @@
+import os
 import streamlit as st
+from langchain_openai import ChatOpenAI
+from langchain.schema import HumanMessage
 
 st.title("langchain-streamlit-app")
 
@@ -17,7 +20,12 @@ if prompt:
     with st.chat_message("user"):
         st.markdown(prompt)
     with st.chat_message("assistant"):
-        response = "Hey"
-        st.markdown(response)
+        chat = ChatOpenAI(
+            model_name="gpt-3.5-turbo",
+            temperature=0.5,
+        )
+        messages = [HumanMessage(content=prompt)]
+        response = chat(messages)
+        st.markdown(response.content)
 
     st.session_state.messages.append({"role": "assistant", "content": response})
